@@ -113,7 +113,7 @@ def replace_capsule(text):
 app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
-def hello():
+def OCR():
     #print(request.files['url'].read())
     # try:
     #     print(request)
@@ -141,7 +141,7 @@ def hello():
     print(image_nparray)
     org_image = cv2.imdecode(image_nparray, cv2.IMREAD_COLOR)
     # org_image2 = org_image.copy() 
-    receipt_image = make_scan_image(org_image, width=1000, ksize=(5, 5), min_threshold=20, max_threshold=70)
+    receipt_image = make_scan_image(org_image, width=600, ksize=(5, 5), min_threshold=50, max_threshold=100)
     options = "--psm 6"
     text = pytesseract.image_to_string(cv2.cvtColor(receipt_image, cv2.COLOR_BGR2RGB), config=options, lang='kor')
 
@@ -151,10 +151,10 @@ def hello():
     # print(text)
     # print("\n")
 
-    pattern = r'\b\w*(?:정|캡슐|캡술|캡슬|시럽)\b'
+    pattern = r'\b\w*(?:정|캡슐|캡술|캡슬|시럽|액|mg)\b'
     matches = re.findall(pattern, text)
     print(matches)
-
+    print(text)
     modify_matches = replace_capsule_in_list(matches)
     print(modify_matches)  
     return modify_matches
